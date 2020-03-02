@@ -39,6 +39,27 @@ class Node {
   
   //Set parent
   void setParent(Node*);
+
+  //Get uncle
+  Node* getUncle();
+
+  //Get Sibling
+  Node* getSibling();
+  
+  //Toggle color
+  void toggleColor();
+
+  //Called on node that goes down
+  /*       N             c
+          / \           / \
+         b  c    -->   N  e
+           / \        / \ 
+          d   e      b   d
+  */
+  void rotateLeft();
+
+  //Same as rleft but reverse (still called on Node that goes down)
+  void rotateRight();
   
   //Destructor
   ~Node();
@@ -49,6 +70,7 @@ private:
   Node* right = NULL;
   Node* parent = NULL;
   int value;
+  bool isRed; 
 
 };
 
