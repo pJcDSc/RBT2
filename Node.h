@@ -58,6 +58,8 @@ class Node {
   */
   void rotateLeft();
 
+  bool isRed();
+
   //Same as rleft but reverse (still called on Node that goes down)
   void rotateRight();
   
@@ -70,7 +72,7 @@ private:
   Node* right = NULL;
   Node* parent = NULL;
   int value;
-  bool isRed; 
+  bool isred; 
 
 };
 

@@ -15,7 +15,7 @@ Node::Node(int v) {
   right = NULL;
   left = NULL;
   parent = NULL;
-  isRed = false;
+  isred = false;
 }
 
 //Get value of node
@@ -60,21 +60,26 @@ void Node::setParent(Node* n) {
 
 //Switch the color of the node
 void Node::toggleColor() {
-  isRed = !isRed;
+  isred = !isred;
+}
+
+//Return whether node is red or not
+bool Node::isRed() {
+  return isred;
 }
 
 //Rotates this node left
-/*        N             c
-         / \           / \
-        b  c    -->   N  e
-          / \        / \ 
-         d   e      b   d
+/*         N             c
+          / \           / \
+          b  c    -->   N  e
+            / \        / \ 
+           d   e      b   d
 */
-void rotateLeft() {
+void Node::rotateLeft() {
   if (right == NULL) return; //can't rotate a leaf in
   Node* rt = right; //Node that will be rotated to top (c)
   Node* p = parent; //Original parent
-  
+
   right = right -> getLeft(); //Set this right to be right's left (d) 
   rt -> setLeft(this);        //Set this to be below rt (c - N)
   parent = rt;                //Update this parent to (c) 
@@ -100,8 +105,8 @@ void rotateLeft() {
         b  c    -->  d   N
        / \              / \
       d   e            e   c
-*/  
-void rotateRight() {
+*/
+void Node::rotateRight() {
   if (left == NULL) return; //can't rotate a leaf into the tree
   Node* lft = left;
   Node* p = parent;

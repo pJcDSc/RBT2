@@ -10,26 +10,28 @@
 #include "Node.h"
 
 class RBT {
-	
-	public:
 
-		//Constructor
- 		RBT();
+  public:
 
-		//Add node
-		void addNode(int);
+    //Constructor
+    RBT();
 
-		//Display tree
-		void displayTree();
+    //Add node
+    void addNode(int);
 
-		//Destructor
-		~RBT();
-	
-	private:
+    //Display tree
+    void displayTree();
 
-		void addNode(Node*&, int);
-		void displayTree(Node*, int);
-		Node* head;
+    //Destructor
+    ~RBT();
+
+  private:
+
+    void addNode(Node*&, Node*);
+    void displayTree(Node*, int);
+    void fixTree(Node*);
+    void deleteTree(Node*);
+    Node* head;
 
 };	
 
