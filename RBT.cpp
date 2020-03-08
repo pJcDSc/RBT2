@@ -68,7 +68,7 @@ void RBT::fixTree(Node* n) {
     if (!n -> getParent() -> getParent() -> isRed()) n -> getParent() -> getParent() -> toggleColor(); //Set grandparent color to red
     fixTree(n -> getParent() -> getParent());
   }
-  else {                                    //Parent is red, Uncle is black
+  else {                                    //Parent is red, Uncle is black or no uncle
     Node* p = n -> getParent();
     Node* g = p -> getParent();
 
@@ -90,6 +90,7 @@ void RBT::fixTree(Node* n) {
     else {
       g -> rotateLeft();          
     }
+    if (g == head) head = p;                //update head pointer if necessary
     p -> toggleColor();                     //Set p to black, g to red (previously established p is red, g is black)
     g -> toggleColor();
   }
@@ -104,8 +105,8 @@ void RBT::displayTree() {
 void RBT::displayTree(Node* h, int d) {
   if (!h) return;
   displayTree(h -> getLeft(), d+1);
-  for (int i = 0; i < d; i++) cout << "  ";
-  cout << h -> getValue() << endl;
+  for (int i = 0; i < d; i++) cout << "    ";
+  cout << h -> getValue() << (h->isRed() ? "(R)" : "(B)") << endl;
   displayTree(h -> getRight(), d+1);
 }
 
