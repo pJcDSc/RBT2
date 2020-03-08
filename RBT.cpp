@@ -106,7 +106,8 @@ void RBT::displayTree(Node* h, int d) {
   if (!h) return;
   displayTree(h -> getLeft(), d+1);
   for (int i = 0; i < d; i++) cout << "    ";
-  cout << h -> getValue() << (h->isRed() ? "(R)" : "(B)") << endl;
+  //cout << h -> getValue() << (h->isRed() ? "(R)" : "(B)") << endl;
+  cout << (h->isRed() ? "\033[1;31m" : "\033[1;30m") << h -> getValue() << "\033[0m" << endl;
   displayTree(h -> getRight(), d+1);
 }
 
