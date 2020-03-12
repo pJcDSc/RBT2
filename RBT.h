@@ -19,6 +19,9 @@ class RBT {
     //Add node
     void addNode(int);
 
+    //Delete node
+    void deleteNode(int);
+    
     //Display tree
     void displayTree();
 
@@ -29,7 +32,8 @@ class RBT {
 
     void addNode(Node*&, Node*);
     void displayTree(Node*, int);
-    void fixTree(Node*);
+    //void fixTree(Node*);
+    void deleteNode(Node*&, int);
     void deleteTree(Node*);
     Node* head;
 

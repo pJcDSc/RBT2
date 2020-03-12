@@ -111,11 +111,21 @@ void RBT::displayTree(Node* h, int d) {
   displayTree(h -> getRight(), d+1);
 }
 
+//public delete node function
+void RBT::deleteNode(int n) {
+  deleteNode(head, n);
+}
+
+//private delete node function
+void RBT::deleteNode(Node*& head, int n) {
+
+}
+
 //Destructor
 RBT::~RBT() {
   deleteTree(head);
 }
-
+/*
 //Just deletes the entire tree using a postorder traversal
 void RBT::deleteTree(Node* n) {
   if (!n) return;
@@ -123,4 +133,4 @@ void RBT::deleteTree(Node* n) {
   deleteTree(n -> getRight());
   delete n;
 }
-
+*/
