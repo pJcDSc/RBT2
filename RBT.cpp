@@ -3,11 +3,14 @@
  * Date: 2/27/20
  * Red-Black Tree Demo Class
  * This is the class that actually does everything
+ * Printing tree algorithm found on techiedelight
+ * Insertion and deletion for red black tree algorithms found on wikipedia
  */
 
 #include "RBT.h"
 #include "Node.h"
 #include <iostream>
+#include <cstring>
 
 using namespace std;
 
@@ -98,17 +101,46 @@ void RBT::fixTree(Node* n) {
 
 //public display tree function
 void RBT::displayTree() {
-  displayTree(head, 0);
+  displayTree(head, NULL, false);
 }
 
-//private display tree function using inorder navigation
-void RBT::displayTree(Node* h, int d) {
-  if (!h) return;
-  displayTree(h -> getLeft(), d+1);
-  for (int i = 0; i < d; i++) cout << "    ";
-  //cout << h -> getValue() << (h->isRed() ? "(R)" : "(B)") << endl;
+//Helper to print branches while printing tree
+void RBT::printBranches(Trunk* p) {
+  if (p == NULL) return;
+  printBranches(p -> prev);
+  cout << p -> str;
+}
+
+//private display tree function
+//algorithm found at techiedelight.com/c-program-print-binary-tree
+void RBT::displayTree(Node* h, Trunk* prev, bool left) {
+  if (h == NULL) return;
+
+  char indent[5];
+  strcpy(indent, "    ");
+  Trunk* trunk = new Trunk(prev, indent);
+  
+  displayTree(h -> getLeft(), trunk, true);
+
+  if (prev == NULL) trunk -> str = "---";
+  else if (left) {
+    trunk -> str = ".---";
+    strcpy(indent, "   |");
+  }
+  else {
+    trunk -> str = "`---";
+    prev -> str = indent;
+  }
+
+  printBranches(trunk);
   cout << (h->isRed() ? "\033[1;31m" : "\033[1;30m") << h -> getValue() << "\033[0m" << endl;
-  displayTree(h -> getRight(), d+1);
+
+  if (prev != NULL) {
+    prev -> str = indent;
+  }
+  trunk -> str = "   |";
+
+  displayTree(h -> getRight(), trunk, false);
 }
 
 //public delete node function
@@ -123,14 +155,5 @@ void RBT::deleteNode(Node*& head, int n) {
 
 //Destructor
 RBT::~RBT() {
-  deleteTree(head);
+  //deleteTree(head);
 }
-/*
-//Just deletes the entire tree using a postorder traversal
-void RBT::deleteTree(Node* n) {
-  if (!n) return;
-  deleteTree(n -> getLeft());
-  deleteTree(n -> getRight());
-  delete n;
-}
-*/
