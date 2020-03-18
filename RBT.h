@@ -35,6 +35,9 @@ class RBT {
   
   //Display tree
   void displayTree();
+
+  //Search for node
+  bool search(int);
   
   //Destructor
   ~RBT();
@@ -46,7 +49,8 @@ class RBT {
   void printBranches(Trunk*);
   void fixTree(Node*);
   void deleteNode(Node*&, int);
-  //void deleteTree(Node*); //unused now
+  bool search(Node*, int);
+  void deleteTree(Node*); 
   Node* head;
 
 };	

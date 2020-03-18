@@ -149,11 +149,52 @@ void RBT::deleteNode(int n) {
 }
 
 //private delete node function
-void RBT::deleteNode(Node*& head, int n) {
+void RBT::deleteNode(Node*& h, int n) {
+  Node* found = NULL;
+  while (h != NULL) {
+    if (h -> getValue() == n) {
+      found = h;
+      break;
+    }
+    else if (h -> getValue() > n) h = h -> getRight();
+    else if (h -> getValue() < n) h = h -> getLeft();
+  }
+  
+  if (found == NULL) {
+    cout << "Empty tree or Node not found" << endl;
+    return;
+  }
 
+  Node* child = NULL;
+  if (h -> getLeft() != NULL && h -> getRight() != NULL) { //Two children, same procedure as bst
+    child = h -> getRight();
+    while (child -> getLeft()) child = child -> getLeft();
+
+    h -> setValue(child -> getValue());
+    deleteNode(child, child -> getValue());                //Recurse delete on child
+  }
+  child = h -> getLeft() == NULL ? h -> getRight() : h -> getLeft();
+  if (child == NULL) {
+    
+  
 }
 
+//function to replace one node with another (replace cur with chi in the tree (chi )
+void RBT::replace(Node* cur, Node* chi) {
+  if (cur -> getParent() == NULL) head = chi;
+  chi -> setParent(cur -> getParent());
+  if (cur -> getParent() != NULL) {
+    if (cur == cur -> getParent() -> getLeft()) n -> getParent() -> setLeft(chi);
+    else n -> getParent() -> setRight(chi);
+  }
+}
+  
 //Destructor
 RBT::~RBT() {
-  //deleteTree(head);
+  deleteTree(head);
+}
+
+//Delete the tree using delete function
+RBT::deleteTree(Node* n); {
+  while (n != NULL) deleteNode(n, n->getValue());
 }
