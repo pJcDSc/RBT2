@@ -4,7 +4,8 @@
  * Red-Black Tree Demo Class
  * This is the class that actually does everything
  * Printing tree algorithm found on techiedelight
- * Insertion and deletion for red black tree algorithms found on wikipedia
+ * Insertion for red black tree algorithms found on wikipedia
+ * Deletion found on GeeksforGeeks
  */
 
 #include "RBT.h"
@@ -150,51 +151,169 @@ void RBT::deleteNode(int n) {
 
 //private delete node function
 void RBT::deleteNode(Node*& h, int n) {
-  Node* found = NULL;
-  while (h != NULL) {
-    if (h -> getValue() == n) {
-      found = h;
-      break;
-    }
-    else if (h -> getValue() > n) h = h -> getRight();
-    else if (h -> getValue() < n) h = h -> getLeft();
+  if (h == NULL) {
+    cout << "Empty tree or node not found" << endl;
+    return;
   }
-  
-  if (found == NULL) {
-    cout << "Empty tree or Node not found" << endl;
+  if (n < h -> getValue()) {
+    Node* temp = h -> getLeft();
+    deleteNode(temp, n);
+    return;
+  }
+  if (n > h -> getValue()) {
+    Node* temp = h -> getRight();
+    deleteNode(temp, n);
     return;
   }
 
   Node* child = NULL;
   if (h -> getLeft() != NULL && h -> getRight() != NULL) { //Two children, same procedure as bst
+    cout << "2 child" << endl;
     child = h -> getRight();
     while (child -> getLeft()) child = child -> getLeft();
-
-    h -> setValue(child -> getValue());
-    deleteNode(child, child -> getValue());                //Recurse delete on child
-  }
-  child = h -> getLeft() == NULL ? h -> getRight() : h -> getLeft();
-  if (child == NULL) {
     
-  
+    cout << "MemZ" << endl;
+    cout << child -> getValue() << endl;
+    
+    h -> setValue(child -> getValue());
+    deleteNode(child, child -> getValue());
+  }
+  else if (h -> getLeft() != NULL || h -> getRight() != NULL) { //One child
+    cout << "1 child" << endl;
+    child = (h -> getRight() == NULL ? h -> getLeft() : h -> getRight()); //Child is the child of the h
+    bool bothBlack = (!child -> isRed() && !h -> isRed());
+    if (head == h) {                    //if head, replace h with child
+      h -> setValue(child -> getValue());
+      h -> setRight(NULL);
+      h -> setLeft(NULL);
+      delete child;
+    }
+    else {
+      if (h == h -> getParent() -> getLeft()) {
+	h -> getParent() -> setLeft(child);
+      } else {
+	h -> getParent() -> setRight(child);
+      }
+      delete h;
+      child -> setParent(h -> getParent());
+      if (bothBlack) { //Double black at child
+	fixDBlack(child);
+      } else {   //No double black, recolor suffices
+        if (child -> isRed()) child -> toggleColor(); //Color u black
+      }
+    }
+  }
+  else {                  //No children (leaf)
+    cout << "No child" << endl;
+    cout << "Head: " << head << "  h: " << h << endl;
+    if (head == h) { //if h is root delete h, set root to NULL
+      head = NULL;
+      delete h;
+    } else {
+      if (!h -> isRed()) { //Double black leaf node
+	fixDBlack(h);
+      } else {             //No double black
+	if (h -> getSibling() != NULL && !h -> getSibling() -> isRed()) h -> getSibling() -> toggleColor(); //Set sibling to red
+      }
+      if (h -> getParent() -> getLeft() == h) h -> getParent() -> setLeft(NULL); //Delete h from tree
+      else h -> getParent() -> setRight(NULL);
+      delete h;
+    }
+  }
 }
+
+//Function to fix double black node
+void RBT::fixDBlack(Node* n) {
+  if (head == n) //Root
+    return;
+
+  Node* sibling = n -> getSibling();
+  Node* parent = n -> getParent();
+
+  if (sibling == NULL) {
+    //Push double black up (no sibling)
+    fixDBlack(parent);
+  }
+  else {
+    if (sibling -> isRed()) { //sibling is red
+      if (!parent -> isRed()) parent -> toggleColor(); //set parent to red
+      sibling -> toggleColor(); //set sibling to black
+      if (sibling = parent -> getLeft()) { //Sibling on left
+	parent -> rotateRight();
+      } else {
+	parent -> rotateLeft();
+      }
+      fixDBlack(n); //recurse
+    }
+    else { //sibling is black
+      if (sibling -> getLeft() && sibling -> getLeft() -> isRed() ||
+	  sibling -> getRight() && sibling -> getRight() -> isRed()) { //If sibling has red children
+	if (sibling -> getLeft() && sibling -> getLeft() -> isRed()) { //if left is red
+	  if (sibling -> getParent() -> getLeft() == sibling) { //sibling to left of parent
+	    if (sibling -> getLeft() -> isRed() != sibling -> isRed()) sibling -> getLeft() -> toggleColor(); //Set sibling left to sibling color
+	    if (sibling -> isRed() != sibling -> getParent() -> isRed()) sibling -> toggleColor(); //Set sibling to parent color
+	    parent -> rotateRight();
+	  } else { //sibling to right of parent
+	    if (sibling -> getLeft() -> isRed() != sibling -> getParent() -> isRed()) sibling -> getLeft() -> toggleColor(); //Set sibling left to parent color
+	    sibling -> rotateRight();
+	    parent -> rotateLeft();
+	  }
+	} else { //sibling right is red
+	  if (sibling -> getParent() -> getLeft() == sibling) { //sibling on left
+	    if (sibling -> getRight() -> isRed() != sibling -> getParent() -> isRed()) sibling -> getRight() -> toggleColor(); //Set sibling right to parent color
+	    cout << endl << endl << endl;
+	    displayTree();
+	    cout << endl << endl << endl;
+	    sibling -> rotateLeft();
+	    parent -> rotateRight();
+	  } else { //sibling on right
+	    if (sibling -> getRight() -> isRed() != sibling -> isRed()) sibling -> getRight() -> toggleColor(); //Set sibling right to sibling color
+	    if (sibling -> isRed() != sibling -> getParent() -> isRed()) sibling -> toggleColor(); //set sibling color to parent color
+	    parent -> rotateLeft();
+	  }
+	}
+        if (parent -> isRed()) parent -> toggleColor(); //Set parent color to black
+      } else { //sibling has two black children
+	if (!sibling -> isRed()) sibling -> toggleColor(); //Set sibling color to red
+	if (!parent -> isRed()) { //if parent is black
+	  fixDBlack(parent);
+	} else {
+	  parent -> toggleColor(); //Set parent color to black
+	}
+      }
+    }
+  }
+}
+	
 
 //function to replace one node with another (replace cur with chi in the tree (chi )
 void RBT::replace(Node* cur, Node* chi) {
   if (cur -> getParent() == NULL) head = chi;
   chi -> setParent(cur -> getParent());
   if (cur -> getParent() != NULL) {
-    if (cur == cur -> getParent() -> getLeft()) n -> getParent() -> setLeft(chi);
-    else n -> getParent() -> setRight(chi);
+    if (cur == cur -> getParent() -> getLeft()) cur -> getParent() -> setLeft(chi);
+    else cur -> getParent() -> setRight(chi);
   }
 }
-  
+
+//public search function
+bool RBT::search(int n) {
+  return search(head, n);
+}
+
+//private search function
+bool RBT::search(Node* h, int n) {
+  if (h == NULL) return false; //Node not found
+  if (n == h -> getValue()) return true; //Node found
+  if (n < h -> getValue()) return search(h -> getLeft(), n); //n is less than h
+  if (n > h -> getValue()) return search(h -> getRight(), n); //n is greater than h
+}
 //Destructor
 RBT::~RBT() {
   deleteTree(head);
 }
 
 //Delete the tree using delete function
-RBT::deleteTree(Node* n); {
+void RBT::deleteTree(Node* n) {
   while (n != NULL) deleteNode(n, n->getValue());
 }

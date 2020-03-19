@@ -17,6 +17,8 @@ void printHelp();        //Prints the help
 void addNode(RBT*);      //Add a node to the rbt
 void display(RBT*);      //Display the rbt
 void addFile(RBT*);      //Add from file
+void deleteNode(RBT*);   //Delete from RBT
+void search(RBT*);       //Search in RBT
 int strToInt(char*);     //Convert char* to int
 
 int main() {
@@ -25,7 +27,7 @@ int main() {
   char* in = new char(); //in char
 
   cout << "Welcome to Red-Black Tree demo" << endl;
-  cout << "Commands are ADD, READ, PRINT, and QUIT. HELP for more info." << endl;
+  cout << "Commands are ADD, READ, PRINT, SEARCH, DELETE, and QUIT. HELP for more info." << endl;
 
   while (running) {
     cin.get(in, 37);          //read input
@@ -59,6 +61,12 @@ bool parse(char* in, RBT* rbt) {
   else if (strcmp(in, "QUIT") == 0) {
     return false;
   }
+  else if (strcmp(in, "SEARCH") == 0) {
+    search(rbt);
+  }
+  else if (strcmp(in, "DELETE") == 0) {
+    deleteNode(rbt);
+  }
   else {
     cout << "Command not recognized" << endl;
   }
@@ -71,6 +79,8 @@ void printHelp() {
   cout << "ADD: add a node to the red black tree" << endl;
   cout << "READ: add numbers to red black tree from file" << endl;
   cout << "PRINT: display red black tree" << endl;
+  cout << "SEARCH: check whether a number is in the tree" << endl;
+  cout << "DELETE: delete a node from the tree" << endl;
   cout << "QUIT: exit the program" << endl;
 }
 
@@ -114,6 +124,29 @@ void addFile(RBT* rbt) {
     }
   }
   return;
+}
+
+void deleteNode(RBT* rbt) {
+  cout << "What number to delete?" << endl;
+  int n;
+  cin >> n;
+  cin.clear();
+  cin.ignore(999, '\n');
+  rbt -> deleteNode(n);
+}
+
+void search(RBT* rbt) {
+  cout << "What number to search for?" << endl;
+  int n;
+  cin >> n;
+  cin.clear();
+  cin.ignore(999, '\n');
+  if (rbt -> search(n)) {
+    cout << "Node found in tree" << endl;
+  }
+  else {
+    cout << "Node not found" << endl;
+  }
 }
 
 int strToInt(char* str) {

@@ -50,7 +50,9 @@ class RBT {
   void fixTree(Node*);
   void deleteNode(Node*&, int);
   bool search(Node*, int);
-  void deleteTree(Node*); 
+  void deleteTree(Node*);
+  void fixDBlack(Node*);
+  void replace(Node*, Node*);
   Node* head;
 
 };	
