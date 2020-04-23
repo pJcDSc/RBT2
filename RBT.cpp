@@ -351,6 +351,7 @@ bool RBT::search(Node* h, int n) {
   if (n < h -> getValue()) return search(h -> getLeft(), n); //n is less than h
   if (n > h -> getValue()) return search(h -> getRight(), n); //n is greater than h
 }
+
 //Destructor
 RBT::~RBT() {
   while (head) deleteNode(head, head -> getValue());

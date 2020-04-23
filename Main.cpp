@@ -126,6 +126,7 @@ void addFile(RBT* rbt) {
   return;
 }
 
+//Delete a node
 void deleteNode(RBT* rbt) {
   cout << "What number to delete?" << endl;
   int n;
@@ -135,6 +136,7 @@ void deleteNode(RBT* rbt) {
   rbt -> deleteNode(n);
 }
 
+//Search a node
 void search(RBT* rbt) {
   cout << "What number to search for?" << endl;
   int n;
@@ -149,6 +151,7 @@ void search(RBT* rbt) {
   }
 }
 
+//Convert str to int (helper for filereader)
 int strToInt(char* str) {
   int num = 0;
   for (int i = 0; i < strlen(str); i++) {
@@ -159,6 +162,7 @@ int strToInt(char* str) {
   return num;
 }
 
+//Print the tree
 void display (RBT* rbt) {
   rbt -> displayTree();
 }
