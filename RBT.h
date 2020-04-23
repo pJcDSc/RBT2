@@ -53,6 +53,8 @@ class RBT {
   void deleteTree(Node*);
   void fixDBlack(Node*);
   void replace(Node*, Node*);
+  void rotateRight(Node*);
+  void rotateLeft(Node*);
   Node* head;
 
 };	

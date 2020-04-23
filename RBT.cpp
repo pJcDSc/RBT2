@@ -78,21 +78,21 @@ void RBT::fixTree(Node* n) {
 
     //If n is not in the outside of g's subtree, rotate to outside
     if (n == p -> getRight() && p == g -> getLeft()) { //g left subtree, p right subtree. Rotate n to outside
-      p -> rotateLeft();
+      rotateLeft(p);
       n = n -> getLeft();                   //Re-set n to lower left node so cases match up
     }
     else if (n == p -> getLeft() && p == g -> getRight()) { //g right subtree, p left subtree. Rotate n to outside
-      p -> rotateRight();
+      rotateRight(p);
       n = n -> getRight();                  //Re - set n to lower right node so cases match up in part 2
     }
 
     p = n -> getParent();
     g = p -> getParent();                   //Update pointers in case any of them have changed after rotations
     if (n == p -> getLeft()) {              //Left subtree
-      g -> rotateRight();                   //Rotate p into g's spot, g goes down
+      rotateRight(g);                   //Rotate p into g's spot, g goes down
     }
     else {
-      g -> rotateLeft();          
+      rotateLeft(g);          
     }
     if (g == head) head = p;                //update head pointer if necessary
     p -> toggleColor();                     //Set p to black, g to red (previously established p is red, g is black)
@@ -168,18 +168,13 @@ void RBT::deleteNode(Node*& h, int n) {
 
   Node* child = NULL;
   if (h -> getLeft() != NULL && h -> getRight() != NULL) { //Two children, same procedure as bst
-    cout << "2 child" << endl;
     child = h -> getRight();
     while (child -> getLeft()) child = child -> getLeft();
-    
-    cout << "MemZ" << endl;
-    cout << child -> getValue() << endl;
     
     h -> setValue(child -> getValue());
     deleteNode(child, child -> getValue());
   }
   else if (h -> getLeft() != NULL || h -> getRight() != NULL) { //One child
-    cout << "1 child" << endl;
     child = (h -> getRight() == NULL ? h -> getLeft() : h -> getRight()); //Child is the child of the h
     bool bothBlack = (!child -> isRed() && !h -> isRed());
     if (head == h) {                    //if head, replace h with child
@@ -204,8 +199,6 @@ void RBT::deleteNode(Node*& h, int n) {
     }
   }
   else {                  //No children (leaf)
-    cout << "No child" << endl;
-    cout << "Head: " << head << "  h: " << h << endl;
     if (head == h) { //if h is root delete h, set root to NULL
       head = NULL;
       delete h;
@@ -238,10 +231,10 @@ void RBT::fixDBlack(Node* n) {
     if (sibling -> isRed()) { //sibling is red
       if (!parent -> isRed()) parent -> toggleColor(); //set parent to red
       sibling -> toggleColor(); //set sibling to black
-      if (sibling = parent -> getLeft()) { //Sibling on left
-	parent -> rotateRight();
+      if (sibling == parent -> getLeft()) { //Sibling on left
+	rotateRight(parent);
       } else {
-	parent -> rotateLeft();
+	rotateLeft(parent);
       }
       fixDBlack(n); //recurse
     }
@@ -252,24 +245,21 @@ void RBT::fixDBlack(Node* n) {
 	  if (sibling -> getParent() -> getLeft() == sibling) { //sibling to left of parent
 	    if (sibling -> getLeft() -> isRed() != sibling -> isRed()) sibling -> getLeft() -> toggleColor(); //Set sibling left to sibling color
 	    if (sibling -> isRed() != sibling -> getParent() -> isRed()) sibling -> toggleColor(); //Set sibling to parent color
-	    parent -> rotateRight();
+	    rotateRight(parent);
 	  } else { //sibling to right of parent
 	    if (sibling -> getLeft() -> isRed() != sibling -> getParent() -> isRed()) sibling -> getLeft() -> toggleColor(); //Set sibling left to parent color
-	    sibling -> rotateRight();
-	    parent -> rotateLeft();
+	    rotateRight(sibling);
+	    rotateLeft(parent);
 	  }
 	} else { //sibling right is red
 	  if (sibling -> getParent() -> getLeft() == sibling) { //sibling on left
 	    if (sibling -> getRight() -> isRed() != sibling -> getParent() -> isRed()) sibling -> getRight() -> toggleColor(); //Set sibling right to parent color
-	    cout << endl << endl << endl;
-	    displayTree();
-	    cout << endl << endl << endl;
-	    sibling -> rotateLeft();
-	    parent -> rotateRight();
+	    rotateLeft(sibling);
+	    rotateRight(parent);
 	  } else { //sibling on right
 	    if (sibling -> getRight() -> isRed() != sibling -> isRed()) sibling -> getRight() -> toggleColor(); //Set sibling right to sibling color
 	    if (sibling -> isRed() != sibling -> getParent() -> isRed()) sibling -> toggleColor(); //set sibling color to parent color
-	    parent -> rotateLeft();
+	    rotateLeft(parent);
 	  }
 	}
         if (parent -> isRed()) parent -> toggleColor(); //Set parent color to black
@@ -284,7 +274,60 @@ void RBT::fixDBlack(Node* n) {
     }
   }
 }
-	
+
+//Rotate a node right
+/*        N            b
+         / \          / \
+        b  c    -->  d   N
+       / \              / \
+      d   e            e   c
+*/
+void RBT::rotateRight(Node* h) {
+  Node* newp = h -> getLeft();
+  Node* p = h -> getParent();
+  
+  if (h == head) head = newp;//Check root update
+
+  h -> setLeft(newp -> getRight()); //set N left to (e)
+  newp -> setRight(h);  //Set (b) right to N
+  h -> setParent(newp); //Set N parent to (b)
+  if (h -> getLeft() != NULL) { //Update (e) parent to N
+    h -> getLeft() -> setParent(h);
+  }
+
+  if (p != NULL) { //Update parent
+    if (h == p -> getLeft()) p -> setLeft(newp);
+    else p -> setRight(newp);
+  }
+  newp -> setParent(p);
+}
+
+//Rotates this node left
+/*         N             c
+          / \           / \
+          b  c    -->   N  e
+            / \        / \ 
+           d   e      b   d
+*/
+void RBT::rotateLeft(Node* h) {
+  Node* newp = h -> getRight();
+  Node* p = h -> getParent();
+
+  if (h == head) head = newp; //Check root update
+
+  h -> setRight(newp -> getLeft()); //Set N right to (d)
+  newp -> setLeft(h); //Set (c) left to N
+  h -> setParent(newp); //Set (c) to N parent
+  if (h -> getRight() != NULL) { //Update parent for (d)
+    h -> getRight() -> setParent(h);
+  }
+
+  if (p != NULL) { //Update parent
+    if (h == p -> getLeft()) p -> setLeft(newp);
+    else p -> setRight(newp);
+  }
+  newp -> setParent(p);
+}
 
 //function to replace one node with another (replace cur with chi in the tree (chi )
 void RBT::replace(Node* cur, Node* chi) {
@@ -310,10 +353,5 @@ bool RBT::search(Node* h, int n) {
 }
 //Destructor
 RBT::~RBT() {
-  deleteTree(head);
-}
-
-//Delete the tree using delete function
-void RBT::deleteTree(Node* n) {
-  while (n != NULL) deleteNode(n, n->getValue());
+  while (head) deleteNode(head, head -> getValue());
 }

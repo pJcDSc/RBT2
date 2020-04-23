@@ -27,7 +27,7 @@ class Node {
 
   //Set left node
   void setLeft(Node*);
-
+ 
   //Get pointer to right
   Node* getRight();
 
@@ -49,19 +49,7 @@ class Node {
   //Toggle color
   void toggleColor();
 
-  //Called on node that goes down
-  /*       N             c
-          / \           / \
-         b  c    -->   N  e
-           / \        / \ 
-          d   e      b   d
-  */
-  void rotateLeft();
-
   bool isRed();
-
-  //Same as rleft but reverse (still called on Node that goes down)
-  void rotateRight();
   
   //Destructor
   ~Node();
