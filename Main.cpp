@@ -59,6 +59,7 @@ bool parse(char* in, RBT* rbt) {
     addFile(rbt);
   }
   else if (strcmp(in, "QUIT") == 0) {
+    cout << "Thanks for using Red-Black tree demo" << endl;
     return false;
   }
   else if (strcmp(in, "SEARCH") == 0) {
@@ -92,6 +93,7 @@ void addNode(RBT* rbt) {
   cin.clear();
   cin.ignore(999, '\n');
   rbt -> addNode(n);
+  cout << "Number added." << endl;
 }
 
 //Read from file, split by space, call addnode on each
@@ -123,6 +125,7 @@ void addFile(RBT* rbt) {
       if (isdigit(line[i])) build[ind++] = line[i];
     }
   }
+  cout << "Tree updated." << endl;
   return;
 }
 
@@ -133,7 +136,11 @@ void deleteNode(RBT* rbt) {
   cin >> n;
   cin.clear();
   cin.ignore(999, '\n');
-  rbt -> deleteNode(n);
+  if (rbt -> deleteNode(n)) {
+    cout << "Number deleted" << endl;
+  } else {
+    cout << "Number not found" << endl;
+  }
 }
 
 //Search a node
@@ -144,10 +151,10 @@ void search(RBT* rbt) {
   cin.clear();
   cin.ignore(999, '\n');
   if (rbt -> search(n)) {
-    cout << "Node found in tree" << endl;
+    cout << "Number found in tree" << endl;
   }
   else {
-    cout << "Node not found" << endl;
+    cout << "Number not found" << endl;
   }
 }
 

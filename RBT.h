@@ -31,7 +31,7 @@ class RBT {
   void addNode(int);
   
   //Delete node
-  void deleteNode(int);
+  bool deleteNode(int);
   
   //Display tree
   void displayTree();
@@ -48,7 +48,7 @@ class RBT {
   void displayTree(Node*, Trunk*, bool);
   void printBranches(Trunk*);
   void fixTree(Node*);
-  void deleteNode(Node*&, int);
+  bool deleteNode(Node*&, int);
   bool search(Node*, int);
   void deleteTree(Node*);
   void fixDBlack(Node*);

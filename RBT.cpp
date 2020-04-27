@@ -145,25 +145,22 @@ void RBT::displayTree(Node* h, Trunk* prev, bool left) {
 }
 
 //public delete node function
-void RBT::deleteNode(int n) {
-  deleteNode(head, n);
+bool RBT::deleteNode(int n) {
+  return deleteNode(head, n);
 }
 
 //private delete node function
-void RBT::deleteNode(Node*& h, int n) {
-  if (h == NULL) {
-    cout << "Empty tree or node not found" << endl;
-    return;
+bool RBT::deleteNode(Node*& h, int n) {
+  if (h == NULL) { //We've reached the end of the tree
+    return false;
   }
-  if (n < h -> getValue()) {
+  if (n < h -> getValue()) { //Go left
     Node* temp = h -> getLeft();
-    deleteNode(temp, n);
-    return;
+    return deleteNode(temp, n);
   }
-  if (n > h -> getValue()) {
+  if (n > h -> getValue()) { //Go right
     Node* temp = h -> getRight();
-    deleteNode(temp, n);
-    return;
+    return deleteNode(temp, n);
   }
 
   Node* child = NULL;
@@ -213,6 +210,7 @@ void RBT::deleteNode(Node*& h, int n) {
       delete h;
     }
   }
+  return true;
 }
 
 //Function to fix double black node
